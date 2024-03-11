@@ -1,4 +1,5 @@
-import { Stack } from "@mui/material";
+import Box from "@mui/material/Box";
+import Grid from "@mui/material/Unstable_Grid2";
 
 export default function Layout({
   children,
@@ -6,8 +7,10 @@ export default function Layout({
   children: React.ReactNode;
 }>) {
   return (
-    <Stack direction="row" justifyContent="flex-start" alignItems="flex-start" spacing={0.5} padding={4}>
-      {children}
-    </Stack>
+    <Box minWidth={600} margin={3}>
+      <Grid container columns={24} spacing={2}>
+        {children}
+      </Grid>
+    </Box>
   );
 }

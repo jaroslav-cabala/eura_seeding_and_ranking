@@ -1,16 +1,18 @@
-import { playersOpen } from "@/src/testData";
+import { rankedPlayers } from "@/src/testData_rankedPlayers";
 import { getTotalPointsFromXBestResults } from "../lib/getTotalPointsFromXBestResults";
 
 export type GetPlayersSortedByPointsResult = Array<{
   playerId: string;
+  playerUid: string;
   name: string;
   points: number;
 }>;
 
 export const useGetPlayersSortedByPointsOfTwoBestResults = (): GetPlayersSortedByPointsResult => {
-  return playersOpen.map<GetPlayersSortedByPointsResult[number]>((player) => ({
-    playerId: player.playerId,
+  return rankedPlayers.map<GetPlayersSortedByPointsResult[number]>((player) => ({
+    playerId: player.id,
+    playerUid: player.uid,
     name: player.name,
-    points: getTotalPointsFromXBestResults(player.results, 2),
+    points: getTotalPointsFromXBestResults(player.tournamentResults, 2),
   }));
 };
