@@ -4,9 +4,9 @@ import { Group } from "./TournamentDraw";
 
 export const Groups = ({ groups, powerpools }: { groups?: Array<Group>; powerpools?: Array<Group> }) => {
   return (
-    <Grid container xs={12} columns={12}>
+    <Grid container columns={12}>
       {powerpools?.map((powerpool, index) => (
-        <Grid key={index} xs={6}>
+        <Grid xs={6} md={4} key={index}>
           <List>
             <ListSubheader>Powerpool {index + 1}</ListSubheader>
             {powerpool.teams.map((team) => (
@@ -18,7 +18,7 @@ export const Groups = ({ groups, powerpools }: { groups?: Array<Group>; powerpoo
         </Grid>
       ))}
       {groups?.map((group, index) => (
-        <Grid key={index} xs={6}>
+        <Grid xs={6} md={4} key={index}>
           <List>
             <ListSubheader>Group {index + 1}</ListSubheader>
             {group.teams.map((team) => (

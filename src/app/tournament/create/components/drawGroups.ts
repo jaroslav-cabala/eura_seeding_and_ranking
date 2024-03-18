@@ -9,11 +9,14 @@ export const drawGroups = (
   const groups: Array<Group> = Array(numberOfGroups).fill(0).map(() => ({ teams: [] }))
   let powerpools: Array<Group> | undefined = undefined;
 
-  const _participatingTeams = [...participatingTeams];
+  const _participatingTeams = [...participatingTeams].sort((a, b) => b.points - a.points);
 
   if (Number(tournamentDrawSettings.powerpoolGroups)) {
-    const powerpoolTeams = _participatingTeams.splice(0, Number(tournamentDrawSettings.powerpoolTeams));
-    powerpools = drawPowerpools(powerpoolTeams.reverse(), Number(tournamentDrawSettings.powerpoolGroups));
+    powerpools = drawPowerpools(
+      _participatingTeams,
+      Number(tournamentDrawSettings.powerpoolGroups),
+      Number(tournamentDrawSettings.powerpoolTeams)
+    );
   }
 
   _participatingTeams.reverse();
@@ -37,10 +40,12 @@ export const drawGroups = (
 };
 
 const drawPowerpools = (
-  powerpoolTeams: Array<ParticipatingTeam>,
-  noPowerpoolGroups: number
+  participatingTeams: Array<ParticipatingTeam>,
+  noPowerpoolGroups: number,
+  noPowerpoolTeams: number,
 ): TournamentDraw["powerpools"] => {
-  const powerpoolGroups: Array<Group> = Array(noPowerpoolGroups).fill(0).map(() => ({ teams: [] }))
+  const powerpoolGroups: Array<Group> = Array(noPowerpoolGroups).fill(0).map(() => ({ teams: [] }));
+  const powerpoolTeams = participatingTeams.splice(0, noPowerpoolTeams).reverse();
 
   while (powerpoolTeams.length) {
     for (const group of powerpoolGroups) {
@@ -48,7 +53,7 @@ const drawPowerpools = (
       if (team) {
         group.teams.push(team);
       } else if (!team && powerpoolTeams.length) {
-        // if for some reason there's no team left to add to a group but there should,
+        // if for some reason there's no team left to add to a group but there should be,
         // group draw is invalid - return undefined
         return undefined;
       }

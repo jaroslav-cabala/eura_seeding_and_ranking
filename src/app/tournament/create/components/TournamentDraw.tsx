@@ -1,4 +1,4 @@
-import { List, ListSubheader, ListItem, ListItemButton, ListItemText } from "@mui/material";
+import { List, ListSubheader, ListItem, ListItemButton, ListItemText, Button } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2";
 import { useState } from "react";
 import { drawGroups } from "./drawGroups";
@@ -29,7 +29,13 @@ const TournamentDrawSettingsDefault: TournamentDrawSettings = {
   powerpoolTeams: "",
 };
 
-export const TournamentDraw = ({ participatingTeams }: { participatingTeams: Array<ParticipatingTeam> }) => {
+export const TournamentDraw = ({
+  participatingTeams,
+  importTeamsFromFwangoHandler,
+}: {
+  participatingTeams: Array<ParticipatingTeam>;
+  importTeamsFromFwangoHandler: () => void;
+}) => {
   const [tournamentDrawSettings, setTournamentDrawSettings] = useState<TournamentDrawSettings>(
     TournamentDrawSettingsDefault
   );
@@ -42,14 +48,18 @@ export const TournamentDraw = ({ participatingTeams }: { participatingTeams: Arr
   };
 
   return (
-    <Grid container xs={12} md="auto" lg={18}>
-      <Grid xs={12} md>
+    <Grid container xs={12} md={4} lg={8}>
+      <Grid xs={12} md={5}>
+        <Button variant="outlined" onClick={importTeamsFromFwangoHandler}>
+          Import teams from Fwango
+        </Button>
         <List>
           <ListSubheader>Teams {participatingTeams.length}</ListSubheader>
           {participatingTeams
+            .slice()
             .sort((a, b) => b.points - a.points)
             .map((team) => (
-              <ListItem key={team.id} disablePadding dense>
+              <ListItem key={team.id ?? `${team.playerOne.name}_${team.playerTwo.name}`} disablePadding dense>
                 <ListItemButton>
                   <ListItemText
                     className="m-0 p-0"
@@ -61,7 +71,7 @@ export const TournamentDraw = ({ participatingTeams }: { participatingTeams: Arr
             ))}
         </List>
       </Grid>
-      <Grid container xs={12} md columns={12}>
+      <Grid xs={12} md={7}>
         <GroupDrawSettings
           tournamentDrawSettings={tournamentDrawSettings}
           setTournamentDrawSettings={setTournamentDrawSettings}

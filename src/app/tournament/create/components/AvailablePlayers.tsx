@@ -1,5 +1,15 @@
 import { useGetPlayersSortedByPointsOfTwoBestResults } from "@/src/app/api/useGetPlayersSortedByPointsOfTwoBestResults";
-import { List, ListSubheader, ListItemButton, ListItemText, ListItemIcon } from "@mui/material";
+import {
+  List,
+  ListSubheader,
+  ListItemButton,
+  ListItemText,
+  ListItemIcon,
+  TextField,
+  Button,
+  FormControlLabel,
+  Checkbox,
+} from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import Grid from "@mui/material/Unstable_Grid2";
 import { useState } from "react";
@@ -15,6 +25,8 @@ export const AvailablePlayers = (props: {
   const players = useGetPlayersSortedByPointsOfTwoBestResults();
   const [availablePlayers, setAvailablePlayers] = useState<AvailablePlayers>(players);
   const [selectedPlayers, setSelectedPlayers] = useState<AvailablePlayers>([]);
+  const [isNewTeamFormOpen, setIsNewTeamFormOpen] = useState<boolean>(false);
+
   const selectedPlayers_ids = selectedPlayers.map((selectedPlayer) => selectedPlayer.playerId);
 
   // when 2. player is selected, both are removed from the list of avialable players and
@@ -52,15 +64,63 @@ export const AvailablePlayers = (props: {
     }
   };
 
-  const onlyPlayersNotInTheTournament: AvailablePlayers = availablePlayers.filter(
-    (player) =>
-      !props.participatingTeams.find(
-        (team) => team.playerOne.uid === player.playerUid || team.playerTwo.uid === player.playerUid
-      )
-  );
+  const addNewTeamFormSubmitHandler = (formData: FormData): void => {
+    const player1Name = formData.get("player1Name") as string;
+    const player1Points = formData.get("player1Points") as string;
+    const player2Name = formData.get("player2Name") as string;
+    const player2Points = formData.get("player2Points") as string;
+
+    if (player1Name && player1Points && player2Name && player2Points) {
+      const teamName = `${player1Name} / ${player2Name}`;
+      props.onTwoPlayersSelected(
+        teamName,
+        { name: player1Name, id: "", uid: "" },
+        { name: player2Name, id: "", uid: "" },
+        Number(player1Points) + Number(player2Points)
+      );
+    }
+  };
+  const onlyPlayersNotInTheTournament: AvailablePlayers = availablePlayers.filter((player) => {
+    const isPlayerInTheTournament = props.participatingTeams.find(
+      (team) => team.playerOne.uid === player.playerUid || team.playerTwo.uid === player.playerUid
+    );
+
+    return isPlayerInTheTournament ? false : true;
+  });
 
   return (
-    <Grid xs={6} md="auto" lg={3}>
+    <Grid xs={6} md="auto" lg={2}>
+      <FormControlLabel
+        value={isNewTeamFormOpen}
+        control={<Checkbox />}
+        label="Add new team"
+        labelPlacement="end"
+        onChange={(_, checked) => {
+          setIsNewTeamFormOpen(checked);
+        }}
+      />
+      {isNewTeamFormOpen && (
+        <form action={addNewTeamFormSubmitHandler}>
+          <Grid container xs={12}>
+            <Grid xs={12}>New Team</Grid>
+            <Grid xs={8}>
+              <TextField required name="player1Name" label="Player 1 name" variant="outlined" />
+            </Grid>
+            <Grid xs={4}>
+              <TextField required name="player1Points" label="Points" variant="outlined" />
+            </Grid>
+            <Grid xs={8}>
+              <TextField required name="player2Name" label="Player 2 name" variant="outlined" />
+            </Grid>
+            <Grid xs={4}>
+              <TextField required name="player2Points" label="Points" variant="outlined" />
+            </Grid>
+            <Button type="submit" variant="outlined">
+              Add team to the tournament
+            </Button>
+          </Grid>
+        </form>
+      )}
       <List>
         <ListSubheader>Available players {onlyPlayersNotInTheTournament.length}</ListSubheader>
         {onlyPlayersNotInTheTournament

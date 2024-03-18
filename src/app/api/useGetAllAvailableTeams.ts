@@ -6,8 +6,8 @@ export type GetAllAvailableTeamsResult = Array<{
   teamId: string;
   teamUid: string;
   name: string;
-  player1: Player;
-  player2: Player;
+  playerOne: Player;
+  playerTwo: Player;
   points: number;
 }>;
 
@@ -16,8 +16,8 @@ export const useGetAllAvailableTeams = (): GetAllAvailableTeamsResult => {
     teamId: team.id,
     teamUid: team.uid,
     name: team.name,
-    player1: team.players[0],
-    player2: team.players[1],
+    playerOne: team.players[0],
+    playerTwo: team.players[1],
     points: getTotalPointsFromXBestResults(team.tournamentResults, 2)
   }));
 };

@@ -8,7 +8,7 @@ export default function Layout({
 }>) {
   return (
     <Box minWidth={600} margin={3}>
-      <Grid container columns={24} spacing={2}>
+      <Grid container spacing={2}>
         {children}
       </Grid>
     </Box>

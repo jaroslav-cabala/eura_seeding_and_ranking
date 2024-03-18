@@ -37,19 +37,19 @@ export const AvailableTeams = (props: {
     props.onSelectTeam(teamName, playerOne, playerTwo, points, teamId);
   };
 
-  const onlyTeamsWithBothPlayersNotInTheTournament: AvailableTeams = teams.filter(
+  const onlyTeamsWithBothPlayersNotInTheTournament: AvailableTeams = availableTeams.filter(
     (availableTeam) =>
       !props.participatingTeams.find(
         (participatingTeam) =>
-          availableTeam.player1.uid === participatingTeam.playerOne.uid ||
-          availableTeam.player2.uid === participatingTeam.playerOne.uid ||
-          availableTeam.player1.uid === participatingTeam.playerTwo.uid ||
-          availableTeam.player2.uid === participatingTeam.playerTwo.uid
+          availableTeam.playerOne.uid === participatingTeam.playerOne.uid ||
+          availableTeam.playerTwo.uid === participatingTeam.playerOne.uid ||
+          availableTeam.playerOne.uid === participatingTeam.playerTwo.uid ||
+          availableTeam.playerTwo.uid === participatingTeam.playerTwo.uid
       )
   );
 
   return (
-    <Grid xs={6} md="auto" lg={3}>
+    <Grid xs={6} md="auto" lg={2}>
       <List>
         <ListSubheader>Available teams {onlyTeamsWithBothPlayersNotInTheTournament.length}</ListSubheader>
         {onlyTeamsWithBothPlayersNotInTheTournament
@@ -59,7 +59,14 @@ export const AvailableTeams = (props: {
               key={team.teamId}
               dense
               onClick={() =>
-                onSelectTeamHandler(team.teamId, team.name, team.player1, team.player2, team.points, index)
+                onSelectTeamHandler(
+                  team.teamId,
+                  team.name,
+                  team.playerOne,
+                  team.playerTwo,
+                  team.points,
+                  index
+                )
               }
               className=" m-0 p-0"
             >

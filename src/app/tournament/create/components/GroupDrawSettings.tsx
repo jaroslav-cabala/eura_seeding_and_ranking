@@ -15,11 +15,11 @@ export const GroupDrawSettings = ({
   const [powerpools, setPowerpools] = useState<boolean>(false);
 
   return (
-    <Grid container xs={12} columns={12}>
-      <Grid xs={12}>
-        <div>Tournament draw settings</div>
+    <Grid container xs={12} md={8} columns={12}>
+      <Grid xs={12} md="auto" marginBottom={2}>
+        Tournament draw settings
       </Grid>
-      <Grid xs={4}>
+      <Grid xs={4} md="auto" margin={2}>
         <FormControlLabel
           value={powerpools}
           control={<Checkbox />}
@@ -58,7 +58,7 @@ export const GroupDrawSettings = ({
           </>
         )}
       </Grid>
-      <Grid xs={4}>
+      <Grid xs={4} md="auto">
         <TextField
           id="outlined-basic"
           label="Groups"
@@ -72,7 +72,7 @@ export const GroupDrawSettings = ({
           }}
         />
       </Grid>
-      <Grid xs={4}>
+      <Grid xs={4} md="auto">
         <Button
           variant="outlined"
           onClick={() => {
