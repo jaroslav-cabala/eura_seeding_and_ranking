@@ -1,10 +1,9 @@
-import { useGetAllAvailableTeams } from "@/src/app/api/useGetAllAvailableTeams";
-import { List, ListSubheader, ListItemButton, ListItemText, ListItemIcon } from "@mui/material";
+import { Player } from "@/src/app/api/types";
+import { useGetAllAvailableTeams, useGetAllAvailableTeams2 } from "@/src/app/api/useGetAllAvailableTeams";
+import { Grid, List, ListSubheader, ListItemButton, ListItemText, ListItemIcon } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import Grid from "@mui/material/Unstable_Grid2";
 import { useState } from "react";
 import { ParticipatingTeam } from "./types";
-import { Player } from "@/src/app/api/types";
 
 type AvailableTeams = ReturnType<typeof useGetAllAvailableTeams>;
 
@@ -18,8 +17,11 @@ export const AvailableTeams = (props: {
     teamId?: string
   ) => void;
 }) => {
-  const teams = useGetAllAvailableTeams();
-  const [availableTeams, setAvailableTeams] = useState<AvailableTeams>(teams); // use Set since duplicates are not allowed
+  // const teams = useGetAllAvailableTeams();
+  const { data: availableTeams, loading, error } = useGetAllAvailableTeams2();
+
+  // use Set since duplicates are not allowed
+  // const [availableTeams, setAvailableTeams] = useState<AvailableTeams>(teams);
 
   const onSelectTeamHandler = (
     teamId: string,
@@ -29,15 +31,31 @@ export const AvailableTeams = (props: {
     points: number,
     index: number
   ) => {
-    setAvailableTeams((teams) => {
-      const updatedTeams = [...teams];
-      updatedTeams.splice(index, 1);
-      return updatedTeams;
-    });
+    // setAvailableTeams((teams) => {
+    //   const updatedTeams = [...teams];
+    //   updatedTeams.splice(index, 1);
+    //   return updatedTeams;
+    // });
     props.onSelectTeam(teamName, playerOne, playerTwo, points, teamId);
   };
 
-  const onlyTeamsWithBothPlayersNotInTheTournament: AvailableTeams = availableTeams.filter(
+  if (loading) {
+    return (
+      <Grid xs={6} md="auto" lg={2}>
+        LOADING RANKED TEAMS
+      </Grid>
+    );
+  }
+
+  if (error) {
+    return (
+      <Grid xs={6} md="auto" lg={2}>
+        ERROR WHILE LOADING RANKED TEAMS
+      </Grid>
+    );
+  }
+
+  const onlyTeamsWithBothPlayersNotInTheTournament = availableTeams?.filter(
     (availableTeam) =>
       !props.participatingTeams.find(
         (participatingTeam) =>
@@ -51,9 +69,9 @@ export const AvailableTeams = (props: {
   return (
     <Grid xs={6} md="auto" lg={2}>
       <List>
-        <ListSubheader>Available teams {onlyTeamsWithBothPlayersNotInTheTournament.length}</ListSubheader>
+        <ListSubheader>Available teams {onlyTeamsWithBothPlayersNotInTheTournament?.length}</ListSubheader>
         {onlyTeamsWithBothPlayersNotInTheTournament
-          .sort((a, b) => b.points - a.points)
+          ?.sort((a, b) => b.points - a.points)
           .map((team, index) => (
             <ListItemButton
               key={team.teamId}
